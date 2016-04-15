@@ -463,3 +463,15 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+int clone(void *(*func) (void *), void *arg, void *stack){
+	
+}
+
+int join(int pid, void **stack, void **retval){
+	
+}
+
+int texit(void){
+	
+}

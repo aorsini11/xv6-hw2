@@ -104,10 +104,9 @@ sys_halt(void)
 }
 
 int sys_clone(void){
-	void *(*func) (void *);
-	void *arg;
-	void *stack;
-	struct proc* newproc;
+	int func;
+	int arg;
+	int stack;
 	
 	if(argint(0, &func) < 0)
 		return -1;
@@ -116,16 +115,13 @@ int sys_clone(void){
 	if(argint(2, &stack) < 0)
 		return -1;
 		
-	if((newproc = allocproc()) == 0)
-		return -1;
-		
-	
+	return clone((void *) func, (void *) arg, (void *) stack);
 }
 
 int sys_join(void){
 	int pid;
-	void **stack;
-	void **retval;
+	int stack;
+	int retval;
 	
 	if(argint(0, &pid) < 0)
 		return -1;
@@ -133,14 +129,17 @@ int sys_join(void){
 		return -1;
 	if(argint(2, &retval) < 0)
 		return -1;
-	
+		
+	return join(pid, (void **) stack, (void **) retval);
 }
 
 int sys_texit(void){
-	void* retval;
+	int retval;
 	
 	if(argint(0, &func) < 0)
 		return -1;
+		
+	return texit((void *) retval);
 }
 
 
