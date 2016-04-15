@@ -19,6 +19,10 @@ struct cpu {
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
+int clone(void *(*func) (void *), void *arg, void *stack);
+int join(int pid, void **stack, void **retval);
+int texit(void);
+
 // Per-CPU variables, holding pointers to the
 // current cpu and to the current process.
 // The asm suffix tells gcc to use "%gs:0" to refer to cpu
