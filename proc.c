@@ -496,9 +496,14 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 
 
   //Make User Stack
-
-
-
+  np->userStack = stack;
+  np->tf->esp = (int)stack + 4092;
+  *((int *)(np->tf->esp)) = (int) arg;
+  *((int *)(np->tf->esp - 4)) = 0xFFFFFFFF;
+  np->tf->esp = np->tf->esp - 4;
+  
+  //Set instruction pointer
+  np->tf->eip = (int) func;
 
   // Clear %eax so that fork returns 0 in the child.
   np->tf->eax = 0;
@@ -532,7 +537,7 @@ int join(int pid, void **stack, void **retval){
       if(p->parent != proc)
         continue;
       havekids = 1;
-      if(p->state == ZOMBIE){
+      if(p->state == ZOMBIE && p->pid == pid){
         // Found one.
         pid = p->pid;
         kfree(p->kstack);
