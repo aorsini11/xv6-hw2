@@ -4,10 +4,14 @@
 // Define all functions and types for pthreads here.
 // This can be included in both kernel and user code.
 
+#DEFINE STACKSIZE 4096
+
 typedef struct
 {
 	int pid;
 	void *stack;
+	void *func;
+	void *arg;
 } pthread_t;
 
 typedef struct
