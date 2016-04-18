@@ -21,7 +21,7 @@ extern int ncpu;
 
 int clone(void *(*func) (void *), void *arg, void *stack);
 int join(int pid, void **stack, void **retval);
-int texit(void);
+int texit(void *retval);
 
 // Per-CPU variables, holding pointers to the
 // current cpu and to the current process.

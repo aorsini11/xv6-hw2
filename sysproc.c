@@ -136,10 +136,15 @@ int sys_join(void){
 int sys_texit(void){
 	int retval;
 	
-	if(argint(0, &func) < 0)
+	if(argint(0, &retval) < 0)
 		return -1;
 		
-	return texit((void *) retval);
+	proc->retval = (void *)retval;
+	exit();
+	
+	return 0;
+		
+	//return texit((void *) retval);
 }
 
 

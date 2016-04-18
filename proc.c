@@ -485,9 +485,9 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   *np->tf = *proc->tf;
   np->pgdir = proc->pgdir;
   
-  proc->inThread = 1;
+  proc->isThread = 1;
   
-  if(proc->inThread != 1){
+  if(proc->isThread != 1){
 	  np->parent = proc;
   }
   else{
@@ -522,7 +522,7 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 
 int join(int pid, void **stack, void **retval){
   struct proc *p;
-  int havekids, pid;
+  int havekids;
 
   acquire(&ptable.lock);
   for(;;){
@@ -562,4 +562,6 @@ int texit(void *retval){
 	proc->retval = retval;
 	exit();
 	return 1; //?? not sure if a return value is needed
+}
+
 }

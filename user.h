@@ -27,7 +27,7 @@ int halt(void);
 
 int clone(void *(*func) (void *), void *arg, void *stack);
 int join(int pid, void **stack, void **retval);
-int texit(void);
+int texit(void *retval);
 
 // ulib.c
 int stat(char*, struct stat*);
