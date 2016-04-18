@@ -20,12 +20,11 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 int pthread_join(pthread_t thread, void **retval){
 	int val = join(thread.pid, (void **) thread.stack, retval);
-	// ??do we free memory here or in exit
+	free(thread.stack); //free here because thread not accessible in exit method
 	return val;
 }
 
 int pthread_exit(void *retval){
 	texit(retval);
-	//free memory?
 	return 0;
 }
