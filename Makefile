@@ -174,7 +174,7 @@ UPROGS=\
 	_zombie\
 	_shutdown\
 	_test_clone\
-#	_test_pthread\
+	_test_pthread\
 #	_test_mutex\
 
 fs.img: mkfs README $(UPROGS)
