@@ -485,7 +485,7 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   *np->tf = *proc->tf;
   np->pgdir = proc->pgdir;
   
-  proc->isThread = 1;
+  np->isThread = 1;
   
   if(proc->isThread != 1){
 	  np->parent = proc;
@@ -494,7 +494,12 @@ int clone(void *(*func) (void *), void *arg, void *stack){
 	  np->parent = proc->parent;
   }
 
-
+  // Clear %eax so that fork returns 0 in the child.
+  np->tf->eax = 0;
+  
+  //Set instruction pointer
+  np->tf->eip = (int) func;
+  
   //Make User Stack
   np->userStack = stack;
   np->tf->esp = (int)stack + 4092;
@@ -502,11 +507,6 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   *((int *)(np->tf->esp - 4)) = 0xFFFFFFFF;
   np->tf->esp = np->tf->esp - 4;
   
-  //Set instruction pointer
-  np->tf->eip = (int) func;
-
-  // Clear %eax so that fork returns 0 in the child.
-  np->tf->eax = 0;
 
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
@@ -539,16 +539,16 @@ int join(int pid, void **stack, void **retval){
       havekids = 1;
       if(p->state == ZOMBIE && p->pid == pid){
         // Found one.
-        pid = p->pid;
         kfree(p->kstack);
         p->kstack = 0;
-        freevm(p->pgdir);
+        //freevm(p->pgdir);
         p->state = UNUSED;
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
         release(&ptable.lock);
+        *retval = p->retval;
         return pid;
       }
     }
@@ -562,11 +562,11 @@ int join(int pid, void **stack, void **retval){
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
     sleep(proc, &ptable.lock);  //DOC: wait-sleep
 }
-
+/*
 int texit(void *retval){
 	proc->retval = retval;
 	exit();
 	return 1; //?? not sure if a return value is needed
-}
+}*/
 
 }
