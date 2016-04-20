@@ -164,6 +164,10 @@ int sys_mutex_destroy(void){
 	if(argint(0,&mutex_id)<0)
 		return -1;
 		
+	if(mutex_id>31 || mutex_id<0){
+		return -1;
+	}
+		
 	proc->mtable[mutex_id].active = 0;
 	return 0;
 }
@@ -172,6 +176,10 @@ int sys_mutex_lock(void){
 	int mutex_id;
 	if(argint(0,&mutex_id)<0)
 		return -1;
+		
+	if(mutex_id>31 || mutex_id<0){
+		return -1;
+	}
 		
 	if(proc->mtable[mutex_id].active==0){
 		return -1;
@@ -196,6 +204,10 @@ int sys_mutex_unlock(void){
 	if(argint(0,&mutex_id)<0)
 		return -1;
 		
+	if(mutex_id>31 || mutex_id<0){
+		return -1;
+	}
+	
 	if(proc->mtable[mutex_id].active == 0){
 		return -1;
 	}

@@ -22,6 +22,7 @@ typedef struct
 typedef struct
 {
 	int mid;
+	pthread_mutexattr_t attr;
 } pthread_mutex_t;
 
 typedef struct
