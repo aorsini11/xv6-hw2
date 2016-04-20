@@ -153,7 +153,8 @@ int sys_mutex_init(void){
 		if(proc->mtable[i].active ==0){
 			proc->mtable[i].active = 1;
 			initlock(proc->mtable[i].sl,(char *) i);
-			return proc->mtable[i].mid;
+			//return proc->mtable[i].mid;
+			return i;
 		}
 	}
 	return -1;
@@ -185,14 +186,15 @@ int sys_mutex_lock(void){
 		return -1;
 	}
 	
+	acquire(proc->parent->mtable[mutex_id].sl);
 	while(proc->mtable[mutex_id].locked == 1){
 		sleep(0,proc->mtable[mutex_id].sl);
 	}
 	
 	if(proc->mtable[mutex_id].locked == 0){
-		acquire(proc->mtable[mutex_id].sl);
-		proc->mtable[mutex_id].locked = 1;
-		wakeup(0);
+		//acquire(proc->mtable[mutex_id].sl);
+		proc->parent->mtable[mutex_id].locked = 1;
+		release(proc->parent->mtable[mutex_id].sl);
 		return 0;
 	}
 	
@@ -216,9 +218,12 @@ int sys_mutex_unlock(void){
 		return -1;
 	}
 	
-	release(proc->mtable[mutex_id].sl);
+	acquire(proc->parent->mtable[mutex_id].sl);
+	
 	proc->mtable[mutex_id].locked = 0;
-		
+	wakeup(0);
+	release(proc->parent->mtable[mutex_id].sl);
+	
 	return 0;
 }
 
