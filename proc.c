@@ -174,7 +174,7 @@ fork(void)
 	  np->mtable[j].active = 0;
 	  np->mtable[j].locked = 0;
 	  //initialize spinlock
-	  initlock(proc->mtable[j].sl, (char*)j);
+	  initlock(proc->mtable[j].sl, "lock");
   }
   release(&ptable.lock);
   

@@ -220,10 +220,10 @@ int sys_mutex_unlock(void){
 	if(proc->mtable[mutex_id].active == 0){
 		return -1;
 	}
-	//already unlocked
+	/*already unlocked
 	if(proc->mtable[mutex_id].locked == 0){
 		return -1;
-	}
+	}*/
 	
 	acquire(proc->parent->mtable[mutex_id].sl);
 	
