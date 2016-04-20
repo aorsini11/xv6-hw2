@@ -159,18 +159,30 @@ int sys_mutex_init(void){
 	return -1;
 }
 
-int sys_mutex_destroy(int mutex_id){
-	
+int sys_mutex_destroy(void){
+	int mutex_id;
+	if(argint(0,&mutex_id)<0)
+		return -1;
+		
+	proc->mtable[id].active = 0;
 	return 0;
 }
 
-int sys_mutex_lock(int mutex_id){
-	
+int sys_mutex_lock(void){
+	int mutex_id;
+	if(argint(0,&mutex_id)<0)
+		return -1;
+		
+		
 	return 0;
 }
 
-int sys_mutex_unlock(int mutex_id){
-	
+int sys_mutex_unlock(void){
+	int mutex_id;
+	if(argint(0,&mutex_id)<0)
+		return -1;
+		
+		
 	return 0;
 }
 
