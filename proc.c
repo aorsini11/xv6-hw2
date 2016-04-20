@@ -36,6 +36,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
+  int i;
 
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -69,6 +70,12 @@ found:
   p->context = (struct context*)sp;
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
+  
+  for(i=0;i<32;i++){
+	p->mtable[i].active = 0;
+	p->mtable[i].mid = i;
+	p->mtable[i].locked = 0;
+  }
 
   return p;
 }

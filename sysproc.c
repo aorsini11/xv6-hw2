@@ -148,8 +148,15 @@ int sys_texit(void){
 }
 
 int sys_mutex_init(void){
-	
-	return 0;
+	int i;
+	for(i=0;i<32;i++){
+		if(proc->mtable[i].active ==0){
+			proc->mtable[i].active = 1;
+			initlock(proc->mtable[i].sl,(char *) i);
+			return proc->mtable[i].mid;
+		}
+	}
+	return -1;
 }
 
 int sys_mutex_destroy(int mutex_id){
