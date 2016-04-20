@@ -55,6 +55,15 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
+//Mutex
+typedef struct
+{
+	int mid;
+	int active;
+	int locked;
+	struct spinlock *sl;
+} mutex;
+
 // Per-process state
 struct proc {
   uint sz;                     // Size of process memory (bytes)
@@ -73,6 +82,7 @@ struct proc {
   int isThread;                // Boolean to see if process is thread or not
   void *userStack;             // Pointer to user stack of thread
   void *retval;                // return value of thread
+  mutex mtable[32];			   // Mutex Tables
 };
 
 // Process memory is laid out contiguously, low addresses first:
