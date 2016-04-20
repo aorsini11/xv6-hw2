@@ -164,7 +164,7 @@ int sys_mutex_destroy(void){
 	if(argint(0,&mutex_id)<0)
 		return -1;
 		
-	proc->mtable[id].active = 0;
+	proc->mtable[mutex_id].active = 0;
 	return 0;
 }
 
