@@ -152,8 +152,9 @@ int sys_mutex_init(void){
 	for(i=0;i<32;i++){
 		if(proc->mtable[i].active ==0){
 			proc->mtable[i].active = 1;
-			initlock(proc->mtable[i].sl,(char *) i);
-			//return proc->mtable[i].mid;
+			//initlock(proc->mtable[i].sl,(char *) i);
+			proc->mtable[i].mid = i;
+			proc->mtable[i].chan = &(proc->mtable[i]);
 			return i;
 		}
 	}
@@ -165,7 +166,16 @@ int sys_mutex_destroy(void){
 	if(argint(0,&mutex_id)<0)
 		return -1;
 		
+	//out of bounds
 	if(mutex_id>31 || mutex_id<0){
+		return -1;
+	}
+	//locked
+	if(proc->mtable[mutex_id].locked == 1){
+		return -1;
+	}
+	//unitialized already
+	if(proc->mtable[mutex_id].active == 0){
 		return -1;
 	}
 		
@@ -177,51 +187,48 @@ int sys_mutex_lock(void){
 	int mutex_id;
 	if(argint(0,&mutex_id)<0)
 		return -1;
-		
+	
+	//out of bounds
 	if(mutex_id>31 || mutex_id<0){
 		return -1;
 	}
-		
+	//unitialized
 	if(proc->mtable[mutex_id].active==0){
 		return -1;
 	}
 	
-	acquire(proc->parent->mtable[mutex_id].sl);
-	while(proc->mtable[mutex_id].locked == 1){
-		sleep(0,proc->mtable[mutex_id].sl);
+	acquire(proc->parent->mtable[mutex_id].sl);   //needs parent so it locks all children?
+	while(proc->parent->mtable[mutex_id].locked == 1){
+		sleep(proc->parent->mtable[mutex_id].chan,proc->parent->mtable[mutex_id].sl);
 	}
 	
-	if(proc->mtable[mutex_id].locked == 0){
-		//acquire(proc->mtable[mutex_id].sl);
-		proc->parent->mtable[mutex_id].locked = 1;
-		release(proc->parent->mtable[mutex_id].sl);
-		return 0;
-	}
-	
-	return -1;
+	proc->parent->mtable[mutex_id].locked = 1;
+	release(proc->parent->mtable[mutex_id].sl);
+	return 0;
 }
 
 int sys_mutex_unlock(void){
 	int mutex_id;
 	if(argint(0,&mutex_id)<0)
 		return -1;
-		
+	
+	//out of bounds
 	if(mutex_id>31 || mutex_id<0){
 		return -1;
 	}
-	
+	//unitialized
 	if(proc->mtable[mutex_id].active == 0){
 		return -1;
 	}
-	
+	//already unlocked
 	if(proc->mtable[mutex_id].locked == 0){
 		return -1;
 	}
 	
 	acquire(proc->parent->mtable[mutex_id].sl);
 	
-	proc->mtable[mutex_id].locked = 0;
-	wakeup(0);
+	proc->parent->mtable[mutex_id].locked = 0;
+	wakeup(proc->parent->mtable[mutex_id].chan);
 	release(proc->parent->mtable[mutex_id].sl);
 	
 	return 0;

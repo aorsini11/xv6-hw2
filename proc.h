@@ -62,6 +62,7 @@ typedef struct
 	int active;
 	int locked;
 	struct spinlock *sl;
+	void *chan; //needed for sleep according to piazza
 } mutex;
 
 // Per-process state
