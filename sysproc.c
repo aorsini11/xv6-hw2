@@ -178,7 +178,7 @@ int sys_mutex_lock(void){
 	}
 	
 	while(proc->mtable[mutex_id].locked == 1){
-		sleep(0,proc->mtable[id].sl);
+		sleep(0,proc->mtable[mutex_id].sl);
 	}
 	
 	if(proc->mtable[mutex_id].locked == 0){
@@ -205,7 +205,7 @@ int sys_mutex_unlock(void){
 	}
 	
 	release(proc->mtable[mutex_id].sl);
-	proc->mtable[id].locked = 0;
+	proc->mtable[mutex_id].locked = 0;
 		
 	return 0;
 }
