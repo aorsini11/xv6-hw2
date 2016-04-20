@@ -21,14 +21,14 @@ typedef struct
 
 typedef struct
 {
-	int mid;
-	pthread_mutexattr_t attr;
-} pthread_mutex_t;
+	void *attr;
+} pthread_mutexattr_t;
 
 typedef struct
 {
-	void *attr;
-} pthread_mutexattr_t;
+	int mid;
+	const pthread_mutexattr_t *attr;
+} pthread_mutex_t;
 
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *),void *arg);
 int pthread_join(pthread_t thread, void **retval);

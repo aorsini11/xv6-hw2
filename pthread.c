@@ -35,7 +35,7 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex){
 
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr){
 	mutex->mid = mutex_init();
-	mutex->attr = *attr;
+	mutex->attr = attr;
 	return mutex->mid;
 }
 
