@@ -173,8 +173,22 @@ int sys_mutex_lock(void){
 	if(argint(0,&mutex_id)<0)
 		return -1;
 		
-		
-	return 0;
+	if(proc->mtable[mutex_id].active==0){
+		return -1;
+	}
+	
+	while(proc->mtable[mutex_id].locked == 1){
+		sleep(0,proc->mtable[id].sl);
+	}
+	
+	if(proc->mtable[mutex_id].locked == 0){
+		acquire(proc->mtable[mutex_id].sl);
+		proc->mtable[mutex_id].locked = 1;
+		wakeup(0);
+		return 0;
+	}
+	
+	return -1;
 }
 
 int sys_mutex_unlock(void){
