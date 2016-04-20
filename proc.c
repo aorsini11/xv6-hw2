@@ -135,7 +135,7 @@ growproc(int n)
 int
 fork(void)
 {
-  int i, pid;
+  int i, j, pid;
   struct proc *np;
 
   // Allocate process.
@@ -168,6 +168,14 @@ fork(void)
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
+  
+  //ADDED FOR MUTEXES
+  for(j=0;j<32;j++){
+	  np->mtable[j].active = 0;
+	  np->mtable[j].locked = 0;
+	  //initialize spinlock
+	  initlock(proc->mtable[j].sl, (char*)j);
+  }
   release(&ptable.lock);
   
   return pid;
@@ -472,7 +480,7 @@ procdump(void)
 }
 
 int clone(void *(*func) (void *), void *arg, void *stack){
-  int i, pid;
+  int i, j, pid;
   struct proc *np;
 
   // Allocate process.
@@ -527,6 +535,13 @@ int clone(void *(*func) (void *), void *arg, void *stack){
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
+  
+  // ADDED FOR MUTEX
+  for(j=0;j<32;j++){
+	  //make sure child gets parent's mutexes
+	  np->mtable[j] = proc->mtable[j];
+  }
+  
   release(&ptable.lock);
   
   return pid;
