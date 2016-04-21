@@ -21,7 +21,6 @@ void *thread(void *arg)
 
 	for (i=0; i<TARGET_COUNT_PER_THREAD; i++) {
 		pthread_mutex_lock(&mutex);
-		printf(1,"here\n");
 		counter = g_counter;
 		sleep(0);
 		counter++;

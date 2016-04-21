@@ -197,13 +197,14 @@ int sys_mutex_lock(void){
 		return -1;
 	}
 	
-	acquire(proc->parent->mtable[mutex_id].sl);   //needs parent so it locks all children?
+	
+	acquire(&(proc->parent->mtable[mutex_id].sl));   //needs parent so it locks all children?
 	while(proc->parent->mtable[mutex_id].locked == 1){
-		sleep(proc->parent->mtable[mutex_id].chan,proc->parent->mtable[mutex_id].sl);
+          sleep(proc->parent->mtable[mutex_id].chan,&(proc->parent->mtable[mutex_id].sl));
 	}
 	
 	proc->parent->mtable[mutex_id].locked = 1;
-	release(proc->parent->mtable[mutex_id].sl);
+	release(&(proc->parent->mtable[mutex_id].sl));
 	return 0;
 }
 
@@ -225,13 +226,14 @@ int sys_mutex_unlock(void){
 		return -1;
 	}*/
 	
-	acquire(proc->parent->mtable[mutex_id].sl);
+	
+	acquire(&(proc->parent->mtable[mutex_id].sl));
 	
 	proc->parent->mtable[mutex_id].locked = 0;
 	wakeup(proc->parent->mtable[mutex_id].chan);
-	release(proc->parent->mtable[mutex_id].sl);
-	
-	return 0;
+	release(&(proc->parent->mtable[mutex_id].sl));
+	 
+        return 0;
 }
 
 

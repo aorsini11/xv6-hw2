@@ -174,7 +174,7 @@ fork(void)
 	  np->mtable[j].active = 0;
 	  np->mtable[j].locked = 0;
 	  //initialize spinlock
-	  initlock(proc->mtable[j].sl, "lock");
+	  initlock(&(proc->mtable[j].sl), "lock");
   }
   release(&ptable.lock);
   
@@ -590,5 +590,4 @@ int texit(void *retval){
 	exit();
 	return 1; //?? not sure if a return value is needed
 }*/
-
 }

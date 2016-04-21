@@ -1,6 +1,6 @@
 // Segments in proc->gdt.
 #define NSEGS     7
-
+#include "spinlock.h"
 // Per-CPU state
 struct cpu {
   uchar id;                    // Local APIC ID; index into cpus[] below
@@ -54,16 +54,6 @@ struct context {
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
-
-//Mutex
-typedef struct
-{
-	int mid;
-	int active;
-	int locked;
-	struct spinlock *sl;
-	void *chan; //needed for sleep according to piazza
-} mutex;
 
 // Per-process state
 struct proc {
